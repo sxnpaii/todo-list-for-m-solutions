@@ -6,9 +6,12 @@ import { z } from "zod";
 
 const getAlltasks = async () => {
   try {
-    const resp = await fetch(`http://localhost:3000/api/tasks`, {
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
       cache: "force-cache",
     });
+    if (!resp.ok) {
+      throw new Error("Failed to fetch task data");
+    }
     return await resp.json();
   } catch (err) {
     if (err instanceof Error) {
@@ -19,7 +22,7 @@ const getAlltasks = async () => {
 
 const postTask = async (reqBody: z.infer<typeof zodSchema>) => {
   try {
-    const req = await fetch(`http://localhost:3000/api/tasks`, {
+    const req = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
       method: "POST",
       body: JSON.stringify(reqBody),
     });
@@ -34,7 +37,7 @@ const postTask = async (reqBody: z.infer<typeof zodSchema>) => {
 
 const removeTask = async (taskId: string) => {
   try {
-    const info = await fetch("http://localhost:3000/api/tasks", {
+    const info = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
       method: "DELETE",
       headers: {
         TaskId: taskId,
@@ -61,7 +64,7 @@ const removeTask = async (taskId: string) => {
 
 //     if (reqBody && taskID !== "") {
 //       console.log(taskID);
-//       const updated = await fetch("http://localhost:3000/api/tasks", {
+//       const updated = await fetch("http://${location.origin}/api/tasks", {
 //         method: "PATCH",
 //         headers: {
 //           TakId: taskID,
@@ -83,7 +86,7 @@ const removeTask = async (taskId: string) => {
 
 const updateTaskStatus = async (taskID: string, status: boolean) => {
   try {
-    const info = await fetch(`http://localhost:3000/api/tasks/${taskID}`, {
+    const info = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskID}`, {
       method: "PATCH",
       body: JSON.stringify({ status }),
     });
